@@ -1,7 +1,7 @@
 ## APIVersion: 100025
 ## Title: Slightly Improved™ Experience Bar
-## Version: 2.0.0
-## AddOnVersion: 200
+## Version: 3.0.0
+## AddOnVersion: 300
 ## License: MIT
 ## SavedVariables: SlightlyImprovedExperienceBar_SavedVars
 ## DependsOn: LibAddonMenu-2.0

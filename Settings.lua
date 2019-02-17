@@ -1,5 +1,6 @@
 -- Slightly Improved™ Experience Bar
--- The MIT License © 2016 Arthur Corenzan
+-- The MIT License © 2019 Arthur Corenzan
+-- FreeBSD License © 2014 Kevin Douglas
 
 local NAMESPACE = "SlightlyImprovedExperienceBar"
 
