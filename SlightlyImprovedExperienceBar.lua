@@ -8,16 +8,13 @@ local NAMESPACE = "SlightlyImprovedExperienceBar"
 --
 --
 
-local function TrapPlayerProgressBarHide(savedVars)
-end
-
-local function ShowPlayerProgressBar()
-    PLAYER_PROGRESS_BAR_FRAGMENT:Show()
-
-    if (CanUnitGainChampionPoints("player")) then
-        PLAYER_PROGRESS_BAR:SetBaseType(PPB_CP)
+local function UpdatePlayerProgressBarFragment(visibility)
+    if visibility == "Always Show" then
+        HUD_SCENE:AddFragment(PLAYER_PROGRESS_BAR_CURRENT_FRAGMENT)
+        HUD_UI_SCENE:AddFragment(PLAYER_PROGRESS_BAR_CURRENT_FRAGMENT)
     else
-        PLAYER_PROGRESS_BAR:SetBaseType(PPB_XP)
+        HUD_SCENE:RemoveFragment(PLAYER_PROGRESS_BAR_CURRENT_FRAGMENT)
+        HUD_UI_SCENE:RemoveFragment(PLAYER_PROGRESS_BAR_CURRENT_FRAGMENT)
     end
 end
 
@@ -38,6 +35,7 @@ local function UpdatePlayerProgressBarLabel(label)
         end
     end
 end
+
 --
 --
 --
@@ -48,36 +46,26 @@ local defaultSavedVars = {
 
 CALLBACK_MANAGER:RegisterCallback(NAMESPACE.."_OnSavedVarChanged", function(key, newValue, previousValue)
     if key == "visibility" then
-        if newValue == "Always Show" then
-            ShowPlayerProgressBar()
-        else
-            PLAYER_PROGRESS_BAR_FRAGMENT:Hide()
-        end
+        UpdatePlayerProgressBarFragment(newValue)
     end
 end)
 
 CALLBACK_MANAGER:RegisterCallback(NAMESPACE.."_OnAddOnLoaded", function(savedVars)
-    -- Trap the method Hide() of the experience bar so we
-    -- can skip it if its visibility is set to "always show".
-    local playerProgressBarHide = PLAYER_PROGRESS_BAR.Hide
-    function PLAYER_PROGRESS_BAR:Hide()
-        if savedVars.visibility ~= "Always Show" then
-            playerProgressBarHide(self)
-        end
-    end
 
-    if savedVars.visibility == "Always Show" then
-        ShowPlayerProgressBar()
-    end
-
-    local label = CreateControl("ZO_PlayerProgressBarLabel", ZO_PlayerProgressBar, CT_LABEL)
+    -- Create and anchor progression label on top of the experience bar.
+    local label = CreateControl("ZO_PlayerProgressBarProgressionLabel", ZO_PlayerProgressBar, CT_LABEL)
     label:SetFont("ZoFontWinH4")
     label:SetAnchor(CENTER, ZO_PlayerProgressBar)
 
-    EVENT_MANAGER:RegisterForEvent(NAMESPACE, EVENT_EXPERIENCE_UPDATE, function(eventCode)
+    -- Hook into the method that updates the label with the level so it also updates the progression label.
+    local setLevelLabelText = PLAYER_PROGRESS_BAR.SetLevelLabelText
+    function PLAYER_PROGRESS_BAR:SetLevelLabelText(...)
+        setLevelLabelText(self, ...)
         UpdatePlayerProgressBarLabel(label)
-    end)
-    UpdatePlayerProgressBarLabel(label)
+    end
+
+    -- Update fragment once on load.
+    UpdatePlayerProgressBarFragment(savedVars.visibility)
 end)
 
 --
