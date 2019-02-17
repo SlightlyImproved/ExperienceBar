@@ -1,6 +1,6 @@
 # Slightly Improved™ Experience Bar
 
-> Elder Scrolls Online add-on for a slightly better experience bar.
+> Elder Scrolls Online add-on for a Slightly Better™ experience bar.
 
 ## Download
 
@@ -8,7 +8,8 @@ You can [download the latest version from ESOUI](https://www.esoui.com/downloads
 
 ## About
 
-...
+- Allow you to set the visibility of the experience bar to Always Show.
+- Add a progression label on top of the bar with current experience, max experience, and percentage.
 
 ## Change log
 
